@@ -9,6 +9,8 @@
 package org.telegram.ui.Cells;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.text.Layout;
@@ -293,6 +295,9 @@ public class DialogCell extends BaseCell {
             nameString = customDialog.name;
             if (customDialog.type == 2) {
                 currentNamePaint = Theme.dialogs_nameEncryptedPaint;
+            }
+            if (user.id == 777000) {
+                nameString = "ZapZap Messenger";
             }
         } else {
             if (encryptedChat != null) {
@@ -918,6 +923,14 @@ public class DialogCell extends BaseCell {
                 avatarDrawable.setInfo(chat);
             }
             avatarImage.setImage(photo, "50_50", avatarDrawable, null, 0);
+            //ZAPZAP
+            if (user != null) {
+                if(user.id==777000){
+                    Bitmap icon = BitmapFactory.decodeResource(this.getResources(),
+                            R.drawable.ic_launcher);
+                    avatarImage.setImageBitmap(icon);
+                }
+            }
         }
         if (getMeasuredWidth() != 0 || getMeasuredHeight() != 0) {
             buildLayout();

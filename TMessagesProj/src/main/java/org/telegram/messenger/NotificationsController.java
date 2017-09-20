@@ -286,7 +286,7 @@ public class NotificationsController {
                             .setContentIntent(contentIntent)
                             .setGroup("messages")
                             .setGroupSummary(true)
-                            .setColor(0xff2ca5e0);
+                            .setColor(0xff286d39);
 
                     mBuilder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
 
@@ -1761,7 +1761,7 @@ public class NotificationsController {
                     .setContentIntent(contentIntent)
                     .setGroup("messages")
                     .setGroupSummary(true)
-                    .setColor(0xff2ca5e0);
+                    .setColor(0xff286d39);
 
             mBuilder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
             if (chat == null && user != null && user.phone != null && user.phone.length() > 0) {
@@ -1822,9 +1822,27 @@ public class NotificationsController {
             mBuilder.setDeleteIntent(PendingIntent.getBroadcast(ApplicationLoader.applicationContext, 1, dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
             if (photoPath != null) {
+
+                FileLog.e("GCM", "here...");
+
                 BitmapDrawable img = ImageLoader.getInstance().getImageFromMemory(photoPath, null, "50_50");
                 if (img != null) {
-                    mBuilder.setLargeIcon(img.getBitmap());
+                    //mBuilder.setLargeIcon(img.getBitmap());
+
+                    try {
+                        if(user!=null) {
+                            if (user.id == 777000) {
+                                Bitmap largeIcon = BitmapFactory.decodeResource(ApplicationLoader.applicationContext.getResources(), R.drawable.ic_launcher);
+                                mBuilder.setLargeIcon(largeIcon);
+                            } else {
+                                mBuilder.setLargeIcon(img.getBitmap());
+                            }
+                        }else{
+                            mBuilder.setLargeIcon(img.getBitmap());
+                        }
+                    } catch (Exception e) {
+                        //mBuilder.setLargeIcon(img.getBitmap());
+                    }
                 } else {
                     try {
                         File file = FileLoader.getPathToAttach(photoPath, true);
@@ -2075,7 +2093,7 @@ public class NotificationsController {
                     .setContentText(text)
                     .setAutoCancel(true)
                     .setNumber(messageObjects.size())
-                    .setColor(0xff2ca5e0)
+                    .setColor(0xff286d39)
                     .setGroupSummary(false)
                     .setWhen(((long) messageObjects.get(0).messageOwner.date) * 1000)
                     .setStyle(messagingStyle)
@@ -2086,7 +2104,23 @@ public class NotificationsController {
             if (photoPath != null) {
                 BitmapDrawable img = ImageLoader.getInstance().getImageFromMemory(photoPath, null, "50_50");
                 if (img != null) {
-                    builder.setLargeIcon(img.getBitmap());
+                    //builder.setLargeIcon(img.getBitmap());
+
+                    try {
+                        if(user!=null) {
+                            if (user.id == 777000) {
+                                Bitmap largeIcon = BitmapFactory.decodeResource(ApplicationLoader.applicationContext.getResources(), R.drawable.ic_launcher);
+                                builder.setLargeIcon(largeIcon);
+                            } else {
+                                builder.setLargeIcon(img.getBitmap());
+                            }
+                        }else{
+                            builder.setLargeIcon(img.getBitmap());
+                        }
+                    } catch (Exception e) {
+                        //builder.setLargeIcon(img.getBitmap());
+                    }
+
                 } else {
                     try {
                         File file = FileLoader.getPathToAttach(photoPath, true);

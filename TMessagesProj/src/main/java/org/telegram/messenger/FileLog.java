@@ -85,6 +85,27 @@ public class FileLog {
         return "";
     }
 
+    public static void e(final String exception, final String message) {
+        if (!BuildVars.DEBUG_VERSION) {
+            return;
+        }
+        Log.e(exception, message);
+        if (getInstance().streamWriter != null) {
+            getInstance().logQueue.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        getInstance().streamWriter.write(getInstance().dateFormat.format(System.currentTimeMillis()) + " E/tmessages: " + message + "\n");
+                        getInstance().streamWriter.write(exception);
+                        getInstance().streamWriter.flush();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+
     public static void e(final String message, final Throwable exception) {
         if (!BuildVars.DEBUG_VERSION) {
             return;

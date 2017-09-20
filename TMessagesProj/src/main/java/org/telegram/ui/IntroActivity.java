@@ -18,6 +18,7 @@ import android.content.pm.ActivityInfo;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
@@ -108,7 +109,7 @@ public class IntroActivity extends Activity implements NotificationCenter.Notifi
                 rect.set(x, 0, x + AndroidUtilities.dp(5), AndroidUtilities.dp(5));
                 canvas.drawRoundRect(rect, AndroidUtilities.dp(2.5f), AndroidUtilities.dp(2.5f), paint);
             }
-            paint.setColor(0xff2ca5e0);
+            paint.setColor(0xff286d39);
             x = currentPage * AndroidUtilities.dp(11);
             if (progress != 0) {
                 if (scrollPosition >= currentPage) {
@@ -148,6 +149,10 @@ public class IntroActivity extends Activity implements NotificationCenter.Notifi
 
         SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE);
         preferences.edit().putLong("intro_crashed_time", System.currentTimeMillis()).commit();
+
+        //FileLog.e("ZAPZAP -------------> ");
+        FileLog.e("ZAPZAP", "Page1Title: " + LocaleController.getString("Page1Title", R.string.Page1Title));
+        FileLog.e("ZAPZAP", "LanguageCode: " + LocaleController.getString("LanguageCode", R.string.LanguageCode));
 
         titles = new String[]{
                 LocaleController.getString("Page1Title", R.string.Page1Title),
@@ -260,7 +265,10 @@ public class IntroActivity extends Activity implements NotificationCenter.Notifi
         startMessagingButton.setGravity(Gravity.CENTER);
         startMessagingButton.setTextColor(0xffffffff);
         startMessagingButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-        startMessagingButton.setBackgroundResource(R.drawable.regbtn_states);
+
+        //startMessagingButton.setBackgroundResource(R.drawable.regbtn_states);
+        startMessagingButton.setBackgroundColor(Color.parseColor("#286d39"));
+
         if (Build.VERSION.SDK_INT >= 21) {
             StateListAnimator animator = new StateListAnimator();
             animator.addState(new int[]{android.R.attr.state_pressed}, ObjectAnimator.ofFloat(startMessagingButton, "translationZ", AndroidUtilities.dp(2), AndroidUtilities.dp(4)).setDuration(200));
@@ -296,7 +304,7 @@ public class IntroActivity extends Activity implements NotificationCenter.Notifi
         frameLayout.addView(bottomPages, LayoutHelper.createFrame(66, 5, Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 350, 0, 0));
 
         textView = new TextView(this);
-        textView.setTextColor(0xff1393d2);
+        textView.setTextColor(0xff286d39);
         textView.setGravity(Gravity.CENTER);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         frameLayout.addView(textView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 30, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0, 0, 20));

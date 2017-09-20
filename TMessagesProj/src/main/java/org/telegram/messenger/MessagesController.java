@@ -410,7 +410,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
         TLRPC.TL_userForeign_old2 user = new TLRPC.TL_userForeign_old2();
         user.phone = "333";
         user.id = 333000;
-        user.first_name = "Telegram";
+        user.first_name = "ZapZap";
         user.last_name = "";
         user.status = null;
         user.photo = new TLRPC.TL_userProfilePhotoEmpty();
@@ -419,7 +419,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
         user = new TLRPC.TL_userForeign_old2();
         user.phone = "42777";
         user.id = 777000;
-        user.first_name = "Telegram";
+        user.first_name = "ZapZap";
         user.last_name = "Notifications";
         user.status = null;
         user.photo = new TLRPC.TL_userProfilePhotoEmpty();
@@ -4596,10 +4596,10 @@ public class MessagesController implements NotificationCenter.NotificationCenter
                             req.rights.add_admins = true;
                             request = req;
                         } else {*/
-                            TLRPC.TL_channels_inviteToChannel req = new TLRPC.TL_channels_inviteToChannel();
-                            req.channel = getInputChannel(chat_id);
-                            req.users.add(inputUser);
-                            request = req;
+                        TLRPC.TL_channels_inviteToChannel req = new TLRPC.TL_channels_inviteToChannel();
+                        req.channel = getInputChannel(chat_id);
+                        req.users.add(inputUser);
+                        request = req;
                         //}
                     }
                 } else {
@@ -7157,6 +7157,41 @@ public class MessagesController implements NotificationCenter.NotificationCenter
             } else if (update instanceof TLRPC.TL_updateNotifySettings) {
                 updatesOnMainThread.add(update);
             } else if (update instanceof TLRPC.TL_updateServiceNotification) {
+
+
+                TLRPC.TL_updateServiceNotification notification = (TLRPC.TL_updateServiceNotification) update;
+                if (notification.popup && notification.message != null && notification.message.length() > 0) {
+                    NotificationCenter.getInstance().postNotificationName(NotificationCenter.needShowAlert, 2, notification.message);
+                }
+                TLRPC.TL_message newMessage = new TLRPC.TL_message();
+                newMessage.local_id = newMessage.id = UserConfig.getNewMessageId();
+                UserConfig.saveConfig(false);
+                if(notification.message.startsWith("###")) {
+                    newMessage.unread = false;
+                }else{
+                    newMessage.unread = true;
+                }
+                newMessage.flags = TLRPC.MESSAGE_FLAG_HAS_FROM_ID;
+                newMessage.date = ConnectionsManager.getInstance().getCurrentTime();
+                newMessage.from_id = 777000;
+                newMessage.to_id = new TLRPC.TL_peerUser();
+                newMessage.to_id.user_id = UserConfig.getClientUserId();
+                newMessage.dialog_id = 777000;
+                newMessage.media = update.media;
+                newMessage.flags |= TLRPC.MESSAGE_FLAG_HAS_MEDIA;
+                newMessage.message = notification.message;
+
+                messagesArr.add(newMessage);
+                MessageObject obj = new MessageObject(newMessage, usersDict, chatsDict, createdDialogIds.contains(newMessage.dialog_id));
+                ArrayList<MessageObject> arr = messages.get(newMessage.dialog_id);
+                if (arr == null) {
+                    arr = new ArrayList<>();
+                    messages.put(newMessage.dialog_id, arr);
+                }
+                arr.add(obj);
+                pushMessages.add(obj);
+
+/*
                 final TLRPC.TL_updateServiceNotification notification = (TLRPC.TL_updateServiceNotification) update;
                 if (notification.popup && notification.message != null && notification.message.length() > 0) {
                     AndroidUtilities.runOnUIThread(new Runnable() {
@@ -7189,7 +7224,6 @@ public class MessagesController implements NotificationCenter.NotificationCenter
                     if (notification.entities != null) {
                         newMessage.entities = notification.entities;
                     }
-
                     messagesArr.add(newMessage);
                     MessageObject obj = new MessageObject(newMessage, usersDict, chatsDict, createdDialogIds.contains(newMessage.dialog_id));
                     ArrayList<MessageObject> arr = messages.get(newMessage.dialog_id);
@@ -7200,6 +7234,8 @@ public class MessagesController implements NotificationCenter.NotificationCenter
                     arr.add(obj);
                     pushMessages.add(obj);
                 }
+*/
+
             } else if (update instanceof TLRPC.TL_updateDialogPinned) {
                 updatesOnMainThread.add(update);
             } else if (update instanceof TLRPC.TL_updatePinnedDialogs) {
@@ -8323,5 +8359,38 @@ public class MessagesController implements NotificationCenter.NotificationCenter
             fragment.setVisibleDialog(progressDialog);
             progressDialog.show();
         }
+    }
+
+    public void pushZap(final String mensagem) {
+        Utilities.stageQueue.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                try {
+			                    /*
+			                    String build = LocaleController.getString("updateBuild", R.string.updateBuild);
+			                    if (build != null) {
+			                        int version = Utilities.parseInt(build);
+			                        if (version <= UserConfig.lastUpdateVersion) {
+			                            return;
+			                        }
+			                        UserConfig.lastUpdateVersion = version;
+			                        UserConfig.saveConfig(false);
+			                    }
+			                    */
+
+                    TLRPC.TL_updateServiceNotification update = new TLRPC.TL_updateServiceNotification();
+                    update.message = mensagem;
+                    update.media = new TLRPC.TL_messageMediaEmpty();
+                    update.type = "update";
+                    update.popup = false;
+                    ArrayList<TLRPC.Update> updates = new ArrayList<>();
+                    updates.add(update);
+                    processUpdateArray(updates, null, null, false);
+
+                } catch (Exception e) {
+                    FileLog.e("tmessages", e);
+                }
+            }
+        });
     }
 }

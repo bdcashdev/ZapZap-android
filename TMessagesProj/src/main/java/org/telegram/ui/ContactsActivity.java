@@ -300,7 +300,7 @@ public class ContactsActivity extends BaseFragment implements NotificationCenter
                                 try {
                                     Intent intent = new Intent(Intent.ACTION_SEND);
                                     intent.setType("text/plain");
-                                    intent.putExtra(Intent.EXTRA_TEXT, ContactsController.getInstance().getInviteText());
+                                    intent.putExtra(Intent.EXTRA_TEXT, LocaleController.getString("InviteText", R.string.InviteText));
                                     getParentActivity().startActivityForResult(Intent.createChooser(intent, LocaleController.getString("InviteFriends", R.string.InviteFriends)), 500);
                                 } catch (Exception e) {
                                     FileLog.e(e);

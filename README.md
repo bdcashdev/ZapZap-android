@@ -1,7 +1,7 @@
-## Telegram messenger for Android
+## ZapZap messenger for Android
 
-[Telegram](https://telegram.org) is a messaging app with a focus on speed and security. It’s superfast, simple and free.
-This repo contains the official source code for [Telegram App for Android](https://play.google.com/store/apps/details?id=org.telegram.messenger).
+ZapZap Messenger is messaging application that uses the Telegram API. It’s superfast, simple and free.
+This repo contains the official source code for [Telegram App for Android](https://play.google.com/store/apps/details?id=org.telegram.messenger.erick).
 
 ##Creating your Telegram Application
 

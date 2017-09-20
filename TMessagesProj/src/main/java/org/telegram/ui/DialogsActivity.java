@@ -89,7 +89,7 @@ import org.telegram.ui.ActionBar.Theme;
 import java.util.ArrayList;
 
 public class DialogsActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate {
-    
+
     private RecyclerListView listView;
     private LinearLayoutManager layoutManager;
     private DialogsAdapter dialogsAdapter;
@@ -341,7 +341,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
         FrameLayout frameLayout = new FrameLayout(context);
         fragmentView = frameLayout;
-        
+
         listView = new RecyclerListView(context);
         listView.setVerticalScrollBarEnabled(true);
         listView.setItemAnimator(null);

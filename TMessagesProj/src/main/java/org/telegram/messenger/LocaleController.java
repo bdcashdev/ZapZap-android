@@ -368,7 +368,7 @@ public class LocaleController {
     }
 
     public void reloadCurrentRemoteLocale() {
-        applyRemoteLanguage(currentLocaleInfo, null, true);
+        //applyRemoteLanguage(currentLocaleInfo, null, true);
     }
 
     private String getLocaleString(Locale locale) {
@@ -660,7 +660,7 @@ public class LocaleController {
         String shortName = localeInfo.shortName;
         ConnectionsManager.getInstance().setLangCode(shortName.replace("_", "-"));
         if (localeInfo.isRemote() && !pathToFile.exists()) {
-            applyRemoteLanguage(localeInfo, null, false);
+            //applyRemoteLanguage(localeInfo, null, false);
         }
         try {
             Locale newLocale;
@@ -1350,6 +1350,10 @@ public class LocaleController {
                             for (int a = 0; a < res.objects.size(); a++) {
                                 TLRPC.TL_langPackLanguage language = (TLRPC.TL_langPackLanguage) res.objects.get(a);
                                 LocaleInfo localeInfo = new LocaleInfo();
+
+
+                                //FileLog.e("ZAPZAP", "language.native_name: "+ language.native_name);
+
                                 localeInfo.nameEnglish = language.name;
                                 localeInfo.name = language.native_name;
                                 localeInfo.shortName = language.lang_code.replace('-', '_').toLowerCase();
@@ -1406,9 +1410,15 @@ public class LocaleController {
         if (localeInfo == null && language == null || localeInfo != null && !localeInfo.isRemote()) {
             return;
         }
+
+        //FileLog.e("ZAPZAP", "applyRemoteLanguage: "+ language.native_name);
+
         if (localeInfo.version != 0 && !BuildVars.DEBUG_VERSION && !force) {
             TLRPC.TL_langpack_getDifference req = new TLRPC.TL_langpack_getDifference();
             req.from_version = localeInfo.version;
+
+            FileLog.e("ZAPZAP", "localeInfo.version: "+ localeInfo.version);
+
             ConnectionsManager.getInstance().sendRequest(req, new RequestDelegate() {
                 @Override
                 public void run(final TLObject response, TLRPC.TL_error error) {
@@ -1423,6 +1433,7 @@ public class LocaleController {
                 }
             }, ConnectionsManager.RequestFlagWithoutLogin);
         } else {
+
             ConnectionsManager.getInstance().setLangCode(localeInfo != null ? localeInfo.shortName : language.lang_code);
             TLRPC.TL_langpack_getLangPack req = new TLRPC.TL_langpack_getLangPack();
             if (language == null) {
@@ -1431,6 +1442,13 @@ public class LocaleController {
                 req.lang_code = language.lang_code;
             }
             req.lang_code = req.lang_code.replace("_", "-");
+
+            //ZAPZAP CORREÇÃO LINGUAGEM
+            if(req.lang_code.equals("pt-br")){
+                req.lang_code = "pt_br";
+            }
+            FileLog.e("ZAPZAP", "req.lang_code: "+ req.lang_code);
+
             ConnectionsManager.getInstance().sendRequest(req, new RequestDelegate() {
                 @Override
                 public void run(final TLObject response, TLRPC.TL_error error) {
@@ -2230,5 +2248,10 @@ public class LocaleController {
                 return QUANTITY_OTHER;
             }
         }
+    }
+
+    //ZAPZAP
+    public static String getCurrentLanguage() {
+        return getString("LanguageCode", R.string.LanguageCode);
     }
 }

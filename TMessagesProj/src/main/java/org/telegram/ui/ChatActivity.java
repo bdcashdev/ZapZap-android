@@ -1067,7 +1067,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     openSearchWithText(null);
                 } else if(id == call) {
                     if(currentUser!=null)
-						VoIPHelper.startCall(currentUser, getParentActivity(), MessagesController.getInstance().getUserFull(currentUser.id));
+                        VoIPHelper.startCall(currentUser, getParentActivity(), MessagesController.getInstance().getUserFull(currentUser.id));
                 }
             }
         });
@@ -5328,10 +5328,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         });*/
 
         //if (parentLayout == null || !fragment.onFragmentCreate()) {
-            SendMessagesHelper.prepareSendingVideo(videoPath, 0, 0, 0, 0, null, dialog_id, replyingMessageObject, null, 0);
-            showReplyPanel(false, null, null, null, false);
-            DraftQuery.cleanDraft(dialog_id, true);
-            return false;
+        SendMessagesHelper.prepareSendingVideo(videoPath, 0, 0, 0, 0, null, dialog_id, replyingMessageObject, null, 0);
+        showReplyPanel(false, null, null, null, false);
+        DraftQuery.cleanDraft(dialog_id, true);
+        return false;
         //}
         //if (parentLayout.presentFragment(fragment, removeLast, !animated, true)) {
         //    fragment.setParentChatActivity(this);
@@ -9172,7 +9172,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             case 18: {
                 if(currentUser!=null)
-					VoIPHelper.startCall(currentUser, getParentActivity(), MessagesController.getInstance().getUserFull(currentUser.id));
+                    VoIPHelper.startCall(currentUser, getParentActivity(), MessagesController.getInstance().getUserFull(currentUser.id));
                 break;
             }
             case 19:{

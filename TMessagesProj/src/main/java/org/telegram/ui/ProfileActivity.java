@@ -1226,8 +1226,8 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 items.add(LocaleController.getString("CallViaTelegram", R.string.CallViaTelegram));
                 actions.add(2);
             }
-			items.add(LocaleController.getString("Call", R.string.Call));
-			actions.add(0);
+            items.add(LocaleController.getString("Call", R.string.Call));
+            actions.add(0);
             items.add(LocaleController.getString("Copy", R.string.Copy));
             actions.add(1);
             builder.setItems(items.toArray(new CharSequence[items.size()]), new DialogInterface.OnClickListener() {

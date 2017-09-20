@@ -1161,7 +1161,7 @@ public class VoIPService extends Service implements VoIPController.ConnectionSta
 			builder.setShowWhen(false);
 		}
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			builder.setColor(0xff2ca5e0);
+			builder.setColor(0xff286d39);
 		}
 		if (user.photo != null) {
 			TLRPC.FileLocation photoPath = user.photo.photo_small;
@@ -1222,7 +1222,7 @@ public class VoIPService extends Service implements VoIPController.ConnectionSta
 			builder.setShowWhen(false);
 		}
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			builder.setColor(0xff2ca5e0);
+			builder.setColor(0xff286d39);
 			builder.setVibrate(new long[0]);
 			builder.setCategory(Notification.CATEGORY_CALL);
 			builder.setFullScreenIntent(PendingIntent.getActivity(this, 0, intent, 0), true);

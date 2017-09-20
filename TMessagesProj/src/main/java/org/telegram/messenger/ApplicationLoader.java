@@ -24,20 +24,29 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 import android.util.Base64;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Logger;
+import com.google.android.gms.analytics.StandardExceptionParser;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.SerializedData;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.Components.ForegroundDetector;
+import org.telegram.zapzap.AnalyticsTrackers;
 
 import java.io.File;
 import java.io.RandomAccessFile;
 
-public class ApplicationLoader extends Application {
+public class ApplicationLoader extends MultiDexApplication {
 
     @SuppressLint("StaticFieldLeak")
     public static volatile Context applicationContext;
@@ -49,6 +58,23 @@ public class ApplicationLoader extends Application {
     public static volatile boolean mainInterfacePausedStageQueue = true;
     public static volatile long mainInterfacePausedStageQueueTime;
 
+
+    private static ApplicationLoader mInstance;
+    //public static DBMan myDB;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
+    public static synchronized ApplicationLoader getInstance() {
+        return mInstance;
+    }
+
+
+
+    //TELEGRAM
     private static void convertConfig() {
         SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("dataconfig", Context.MODE_PRIVATE);
         if (preferences.contains("currentDatacenterId")) {
@@ -200,6 +226,8 @@ public class ApplicationLoader extends Application {
     public void onCreate() {
         super.onCreate();
 
+        mInstance = this;
+
         applicationContext = getApplicationContext();
         NativeLoader.initNativeLibs(ApplicationLoader.applicationContext);
         ConnectionsManager.native_setJava(Build.VERSION.SDK_INT == 14 || Build.VERSION.SDK_INT == 15);
@@ -208,6 +236,12 @@ public class ApplicationLoader extends Application {
         applicationHandler = new Handler(applicationContext.getMainLooper());
 
         startPushService();
+
+        AnalyticsTrackers.initialize(this);
+        AnalyticsTrackers.getInstance().get(AnalyticsTrackers.Target.APP);
+
+        //myDB = new DBMan(applicationContext);
+
     }
 
     /*public static void sendRegIdToBackend(final String token) {
@@ -328,4 +362,111 @@ public class ApplicationLoader extends Application {
         }
         return true;*/
     }
+
+
+
+
+    // GOOGLE ANALYTICS V4
+
+    public synchronized Tracker getGoogleAnalyticsTracker() {
+        org.telegram.zapzap.AnalyticsTrackers analyticsTrackers = org.telegram.zapzap.AnalyticsTrackers.getInstance();
+        return analyticsTrackers.get(org.telegram.zapzap.AnalyticsTrackers.Target.APP);
+    }
+
+
+    /***
+     * Tracking screen view
+     *
+     * @param screenName screen name to be displayed on GA dashboard
+     */
+    public void trackScreenView(String screenName) {
+
+/*
+        switch(screenName) {
+
+            case "com.yandex.zensample.app.ZenActivity":
+                screenName = "Yandex";
+                break;
+            case "ZenActivity":
+                screenName = "Yandex";
+                break;
+            case "ZapNews":
+                screenName = "Yandex";
+                break;
+            case "org.telegram.ui.LaunchActivity":
+                screenName = "LaunchActivity";
+                break;
+            case "org.telegram.ui.IntroActivity":
+                screenName = "Entrada";
+                break;
+            case "IntroActivity":
+                screenName = "Entrada";
+                break;
+            case "innovativedeveloper.com.socialapp.MainActivity":
+                screenName = "ZapSocial";
+                break;
+            case "com.thefinestartist.finestwebview.FinestWebViewActivity":
+                screenName = "NavegadorZap";
+                break;
+            case "com.app.sample.recipe.ActivityMain":
+                screenName = "ZapGrupos";
+                break;
+            case "com.app.sample.recipe.ActivityMainCanais":
+                screenName = "ZapCanais";
+            //default:
+            //    screenName = screenName;
+        }
+
+*/
+        FileLog.e("TRACKER GOOGLE",screenName);
+        Tracker t = getGoogleAnalyticsTracker();
+
+        // Set screen name.
+        t.setScreenName(screenName);
+
+        // Send a screen view.
+        t.send(new HitBuilders.ScreenViewBuilder().build());
+
+        GoogleAnalytics.getInstance(this).dispatchLocalHits();
+        GoogleAnalytics.getInstance(this).getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
+    }
+
+
+    /***
+     * Tracking exception
+     *
+     * @param e exception to be tracked
+     */
+    public void trackException(Exception e) {
+        if (e != null) {
+            Tracker t = getGoogleAnalyticsTracker();
+
+            t.send(new HitBuilders.ExceptionBuilder()
+                    .setDescription(
+                            new StandardExceptionParser(this, null)
+                                    .getDescription(Thread.currentThread().getName(), e))
+                    .setFatal(false)
+                    .build()
+            );
+        }
+    }
+
+    /***
+     * Tracking event
+     *
+     * @param category event category
+     * @param action   action of the event
+     * @param label    label
+     */
+    public void trackEvent(String category, String action, String label) {
+        Tracker t = getGoogleAnalyticsTracker();
+
+        // Build and send an Event.
+        if(label==null){
+            t.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).build());
+        }else {
+            t.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).setLabel(label).build());
+        }
+    }
+
 }

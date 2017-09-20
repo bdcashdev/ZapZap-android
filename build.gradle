@@ -5,7 +5,47 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.2'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
+        classpath 'com.novoda:bintray-release:0.3.4'
+        classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.google.gms:google-services:3.0.0'
     }
+}
+
+
+allprojects {
+
+
+    repositories {
+
+        jcenter()
+        maven { url "https://adcolony.bintray.com/AdColony" }
+        maven { url "http://dl.appnext.com/" }
+        maven { url "https://jitpack.io" }
+        maven { url "https://bitbucket.org/adscend/androidsdk/raw/master/" }
+        maven { url "http://repo.appnext.com/" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "http://dl.bintray.com/glomadrian/maven" }
+        maven { url 'https://github.com/leonardocardoso/mvn-repo/raw/master/maven-deploy' }
+        maven { url "http://ampiri.bintray.com/maven" }
+        maven { url 'https://mvn.jwplayer.com/content/repositories/releases/'}
+    }
+
+    buildscript {
+        repositories {
+            jcenter()
+            mavenCentral()
+        }
+    }
+}
+
+
+ext {
+    userOrg = 'yarolegovich'
+    groupId = 'com.yarolegovich'
+    uploadName = 'LovelyDialog'
+    description = 'This library is a set of simple wrapper classes that are aimed to help you easily create fancy dialogs.'
+    publishVersion = '1.0.4'
+    licences = ['Apache-2.0']
 }

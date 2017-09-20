@@ -5,6 +5,11 @@ obj/
 *.iml
 local.properties
 *.keystore
+*.hprof
+*.json
+*.jks
+*.txt
 gradle.properties
-
+TMessagesProj/.externalNativeBuild/
+TMessagesProj/src/main/res/xml/app_tracker.xml
 TMessagesProj/src/main/java/org/telegram/messenger/BuildVars.java
